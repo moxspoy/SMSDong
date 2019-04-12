@@ -125,6 +125,7 @@ public class HomeFragment extends Fragment {
         } else {
             Sender sender = new Sender(getView(), numberList, loading);
             sender.execute(smsBodyText);
+            smsBody.setText("");
         }
     }
 

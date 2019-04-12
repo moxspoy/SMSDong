@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SMSDong</string>
+    <string name="title_home">Home</string>
+    <string name="setting">Setting</string>
+    <string name="exit">Exit</string>
+    <string name="penerima">Recipient</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="send_multiple_sms">Send Multiple SMS</string>
+    <string name="sms_body">SMS Body</string>
+    <string name="send">Send</string>
+</resources>

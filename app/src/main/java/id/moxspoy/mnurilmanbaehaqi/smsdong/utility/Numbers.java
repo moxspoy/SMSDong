@@ -2,6 +2,7 @@ package id.moxspoy.mnurilmanbaehaqi.smsdong.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 
 import java.util.HashSet;
@@ -26,13 +27,19 @@ public class Numbers {
     }
 
     public void addNumber(String number) {
+        Set<String> set = sharedPreferences.getStringSet(SP_GET_NUMBER, new HashSet<>());
+        Set<String> in = new HashSet<>(set);
+        in.add(number);
+
         edit = sharedPreferences.edit();
-        edit.putStringSet(number, numbers);
+
+        edit.putStringSet(SP_GET_NUMBER, in);
+        Log.d("onSharedPref", "number size " + in.size());
         edit.apply();
     }
 
 
     public Set<String> getAllNumber() {
-        return sharedPreferences.getStringSet(SP_GET_NUMBER, numbers);
+        return sharedPreferences.getStringSet(SP_GET_NUMBER, new HashSet<>());
     }
 }

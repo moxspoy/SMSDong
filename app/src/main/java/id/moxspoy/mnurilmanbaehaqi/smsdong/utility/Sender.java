@@ -1,6 +1,8 @@
 package id.moxspoy.mnurilmanbaehaqi.smsdong.utility;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.telephony.SmsManager;
@@ -18,33 +20,37 @@ public class Sender extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = "SenderAsynTask";
 
-    private Context context;
+    private View view;
     private List<String> numbers;
     private ProgressBar loading;
     private SmsManager smsManager;
+    private ProgressDialog progressDialog;
 
-    public Sender(Context context, List<String> numbers, ProgressBar loding) {
-        this.context = context;
+    public Sender(View view, List<String> numbers, ProgressBar loding) {
+        this.view = view;
         this.numbers = numbers;
         this.loading = loding;
         smsManager = SmsManager.getDefault();
+        progressDialog = new ProgressDialog(view.getContext());
     }
 
     @Override
     protected String doInBackground(String... smsBody) {
         int totalNumber = numbers.size();
 
+        Log.d(TAG, "start executing..");
         //execute
         for (int i = 0; i < totalNumber; i++) {
             Log.d(TAG, "step " + i + ", sending sms to " + numbers.get(i));
-            publishProgress(i);
             try {
                 Thread.sleep(SMS_TIME_INTERVAL);
+                publishProgress(i);
             } catch (InterruptedException e) {
                 return "error while using thread when delay waiting sms";
             }
 
-            //smsManager.sendTextMessage(numbers.get(i), null, smsBody, null, null);
+            //Log.d(TAG, smsBody[0]);
+            smsManager.sendTextMessage(numbers.get(i), null, smsBody[0], null, null);
         }
         return "Selesai";
     }
@@ -52,25 +58,29 @@ public class Sender extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        loading.setMax(numbers.size());
-        loading.setVisibility(View.VISIBLE);
+        progressDialog.show();
+        loading.setVisibility(View.GONE);
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        loading.setVisibility(View.GONE);
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
         showSnackbar(s);
+
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
-        loading.setProgress(values[0]);
+        progressDialog.setMessage("sending.. " + (values[0] + 1) + "/" + numbers.size());
     }
 
     private void showSnackbar(String message) {
-        Snackbar.make(context, message,
+        Snackbar.make(view, message,
                 Snackbar.LENGTH_SHORT).show();
     }
 

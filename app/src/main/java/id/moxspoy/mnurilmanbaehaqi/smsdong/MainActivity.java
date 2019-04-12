@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     private HomeFragment homeFragment = new HomeFragment();
     private RecipientFragment recipientFragment = new RecipientFragment();
-    private SettingFragment settingFragment = new SettingFragment();
 
 
     @Override
@@ -63,11 +62,6 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.navigation_recipient:
                             switchFragments(recipientFragment);
                             currentFragment = R.id.navigation_recipient;
-                            invalidateOptionsMenu();
-                            return true;
-                        case R.id.navigation_settings:
-                            switchFragments(settingFragment);
-                            currentFragment = R.id.navigation_settings;
                             invalidateOptionsMenu();
                             return true;
                         case R.id.navigation_exit:

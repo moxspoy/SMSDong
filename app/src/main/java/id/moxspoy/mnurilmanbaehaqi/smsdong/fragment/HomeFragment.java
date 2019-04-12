@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.moxspoy.mnurilmanbaehaqi.smsdong.R;
 import id.moxspoy.mnurilmanbaehaqi.smsdong.utility.Numbers;
+import id.moxspoy.mnurilmanbaehaqi.smsdong.utility.Sender;
 
 public class HomeFragment extends Fragment {
 
@@ -71,22 +72,15 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
 
+        checkPermission();
+
         smsManager = SmsManager.getDefault();
         initNumbersFromSharedPref();
 
         return view;
     }
 
-    private void initNumbersFromSharedPref() {
-        numberList = new ArrayList<>();
-        spNumbers = new Numbers(getContext());
-        numbers = spNumbers.getAllNumber();
-        numbers.addAll(numberList);
-    }
-
-    @OnClick(R.id.sms_send)
-    void sendSMS(){
-
+    private void checkPermission() {
         //check permision
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.SEND_SMS)
@@ -98,44 +92,28 @@ public class HomeFragment extends Fragment {
                         new String[]{Manifest.permission.SEND_SMS},
                         PackageManager.PERMISSION_GRANTED);
             }
-        } else {
-            executeSendingSms();
         }
     }
 
-    private void executeSendingSms() {
-        String smsBodyText = smsBody.getText().toString();
-        int totalNumber = numberList.size();
+    private void initNumbersFromSharedPref() {
+        numberList = new ArrayList<>();
+        spNumbers = new Numbers(getContext());
+        numbers = spNumbers.getAllNumber();
+        numbers.addAll(numberList);
+    }
 
-        if (numberList.isEmpty()) {
+    @OnClick(R.id.sms_send)
+    void sendSMS(){
+        if (numbers.isEmpty()) {
+            numbers.add("has");
+            numbers.add("crot");
+            numbers.add("ahh");
             //showSnackbar("Phone number is empty. Please add first in setting menu");
-            numberList.add(MOXSPOY_NUMBER);
+        } else {
+            String smsBodyText = smsBody.getText().toString();
+            Sender sender = new Sender(getContext(), numberList, loading);
+            sender.execute(smsBodyText);
         }
-
-        loading.setVisibility(View.VISIBLE);
-        //execute
-        for (int i = 0; i < totalNumber; i++) {
-            Log.d(TAG, "step " + i + ", sending sms to " + numberList.get(i));
-            smsManager.sendTextMessage(numberList.get(i), null, smsBodyText, null, null);
-            delay();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                loading.setProgress(i, true);
-            }
-        }
-        loading.setVisibility(View.GONE);
-    }
-
-    private void delay() {
-        try {
-            Thread.sleep(SMS_TIME_INTERVAL);
-        } catch (InterruptedException e) {
-            showSnackbar("error while using thread when delay waiting sms");
-        }
-    }
-
-    private void showSnackbar(String message) {
-        Snackbar.make(getView(), message,
-                Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -145,7 +123,6 @@ public class HomeFragment extends Fragment {
             case 3:
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getContext(), "you granted permission", Toast.LENGTH_SHORT).show();
-                    executeSendingSms();
                 } else {
                     Toast.makeText(getContext(), "you denied permission. cannot send sms. please try again",
                             Toast.LENGTH_SHORT).show();

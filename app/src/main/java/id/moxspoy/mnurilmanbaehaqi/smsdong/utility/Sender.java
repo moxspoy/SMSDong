@@ -14,17 +14,18 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-import static id.moxspoy.mnurilmanbaehaqi.smsdong.fragment.HomeFragment.SMS_TIME_INTERVAL;
 
 public class Sender extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = "SenderAsynTask";
+    private long SMS_TIME_INTERVAL;
 
     private View view;
     private List<String> numbers;
     private ProgressBar loading;
     private SmsManager smsManager;
     private ProgressDialog progressDialog;
+    private Numbers spNumbers;
 
     public Sender(View view, List<String> numbers, ProgressBar loding) {
         this.view = view;
@@ -32,6 +33,7 @@ public class Sender extends AsyncTask<String, Integer, String> {
         this.loading = loding;
         smsManager = SmsManager.getDefault();
         progressDialog = new ProgressDialog(view.getContext());
+        spNumbers = new Numbers(view.getContext());
     }
 
     @Override
@@ -43,6 +45,7 @@ public class Sender extends AsyncTask<String, Integer, String> {
         for (int i = 0; i < totalNumber; i++) {
             Log.d(TAG, "step " + i + ", sending sms to " + numbers.get(i));
             try {
+                SMS_TIME_INTERVAL = spNumbers.getIntervalTime();
                 Thread.sleep(SMS_TIME_INTERVAL);
                 publishProgress(i);
             } catch (InterruptedException e) {

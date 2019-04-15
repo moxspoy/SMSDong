@@ -14,6 +14,7 @@ public class Numbers {
     private Context context;
     private static final String SP_NAME = "SP_NUMBERS";
     private static final String SP_GET_NUMBER = "GET_NUMBERS";
+    private static final String SP_GET_TIME = "GET_SMS_INTERVAL";
 
 
     private SharedPreferences sharedPreferences;
@@ -41,5 +42,21 @@ public class Numbers {
 
     public Set<String> getAllNumber() {
         return sharedPreferences.getStringSet(SP_GET_NUMBER, new HashSet<>());
+    }
+
+    public void setIntervalTime(long time) {
+        edit = sharedPreferences.edit();
+        edit.putLong(SP_GET_TIME, time);
+        edit.apply();
+    }
+
+    public long getIntervalTime() {
+        return sharedPreferences.getLong(SP_GET_TIME, 2000L);
+    }
+
+    public void deleteNumber() {
+        edit = sharedPreferences.edit();
+        edit.remove(SP_GET_NUMBER);
+        edit.apply();
     }
 }

@@ -22,6 +22,8 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -45,7 +47,12 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MOXSPOY_NUMBER = "085920039600";
-    public static final long SMS_TIME_INTERVAL = 2000L;
+    private static final String defaultSmsBody = "Assalamualaikum wr wb" +
+            "\ndalam menghadapi pemilu 2019" +
+            "\nelemen guru ayo gunakan hak pilihnya" +
+            "\ningat\n\n" +
+            "Dr. Didi Suprijadi MM (Ketua PB PGRI)";
+    public long SMS_TIME_INTERVAL = 2000L;
     private String PERMISSION_TEXT = "permission is ";
 
     @BindView(R.id.sms_body)
@@ -54,6 +61,16 @@ public class HomeFragment extends Fragment {
     Button sendSmsButton;
     @BindView(R.id.sms_loading)
     ProgressBar loading;
+    @BindView(R.id.option_time)
+    RadioGroup radioGroup;
+    @BindView(R.id.option_2_second)
+    RadioButton option2;
+    @BindView(R.id.option_5_second)
+    RadioButton option5;
+    @BindView(R.id.option_10_second)
+    RadioButton option10;
+    @BindView(R.id.option_21_second)
+    RadioButton option21;
 
     private SmsManager smsManager;
     private ArrayList<String> numberList;
@@ -76,8 +93,12 @@ public class HomeFragment extends Fragment {
 
         smsManager = SmsManager.getDefault();
         initNumbersFromSharedPref();
-
+        initDefaultSMSBody();
         return view;
+    }
+
+    private void initDefaultSMSBody() {
+        smsBody.setText(defaultSmsBody);
     }
 
     private void checkPermission() {
@@ -110,6 +131,25 @@ public class HomeFragment extends Fragment {
     @OnClick(R.id.sms_send)
     void sendSMS(){
         String smsBodyText = smsBody.getText().toString();
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        RadioButton radioButton = getView().findViewById(selectedId);
+        switch (radioButton.getText().toString()) {
+            case "2":
+                spNumbers.setIntervalTime(2000L);
+                break;
+            case "5":
+                spNumbers.setIntervalTime(5000L);
+                break;
+            case "10":
+                spNumbers.setIntervalTime(10000L);
+                break;
+            case "21":
+                spNumbers.setIntervalTime(21000L);
+                break;
+        }
+        SMS_TIME_INTERVAL = spNumbers.getIntervalTime();
+        Log.d(TAG, radioButton.getText().toString()  + " SMS INTERVAL: " + SMS_TIME_INTERVAL);
+
         if (smsBodyText.isEmpty()) {
             Snackbar.make(getView(), "Fill this message, cannot create sms!",
                     Snackbar.LENGTH_SHORT).show();
@@ -125,7 +165,7 @@ public class HomeFragment extends Fragment {
         } else {
             Sender sender = new Sender(getView(), numberList, loading);
             sender.execute(smsBodyText);
-            smsBody.setText("");
+            smsBody.setText(defaultSmsBody);
         }
     }
 

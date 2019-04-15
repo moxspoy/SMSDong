@@ -40,7 +40,7 @@
                 android:hint="@string/sms_body">
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="150dp"
                     android:inputType="textMultiLine"
                     android:focusable="true"
                     android:id="@+id/sms_body"
@@ -68,5 +68,56 @@
         android:id="@+id/sms_loading"
         android:visibility="gone"
         style="@style/Widget.AppCompat.ProgressBar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sms_container"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioGroup
+                android:id="@+id/option_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option Time (second)"
+                style="@style/Base.TextAppearance.AppCompat.Title"
+                android:textColor="@color/putih"/>
+            <RadioButton
+                android:id="@+id/option_2_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="@color/putih"/>
+            <RadioButton
+                android:id="@+id/option_5_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textColor="@color/putih"/>
+            <RadioButton
+                android:id="@+id/option_10_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textColor="@color/putih"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/option_21_second"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="21"
+                android:textColor="@color/putih"/>
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

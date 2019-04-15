@@ -57,6 +57,8 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
     ListView listNumberView;
     @BindView(R.id.btn_add_recipient)
     FloatingActionButton addBtn;
+    @BindView(R.id.btn_delete_recipient)
+    FloatingActionButton deleteBtn;
 
     public RecipientFragment() {
         // Required empty public constructor
@@ -120,6 +122,9 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
     }
 
     private void initList() {
+        if (!numberList.isEmpty()) {
+            deleteBtn.setVisibility(View.VISIBLE);
+        }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
                 R.layout.item_number_list, R.id.text_view_number, numberList);
         listNumberView.setAdapter(arrayAdapter);
@@ -147,7 +152,7 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
 
     private void delay() {
         try {
-            Thread.sleep(HomeFragment.SMS_TIME_INTERVAL);
+            Thread.sleep(spNumbers.getIntervalTime());
         } catch (InterruptedException e) {
             showSnackbar("error while using thread when delay waiting sms");
         }
@@ -160,24 +165,30 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
 
     @Override
     public void onSelect(String path) {
+        writeDataToCSV(path);
+        toMainActivity();
+
+    }
+
+    private void writeDataToCSV(String path) {
         try {
             FileReader fileReader = new FileReader(path);
             BufferedReader reader = new BufferedReader(fileReader);
             String line = reader.readLine();
             while (line != null) {
-                String number = line.replace(",","");
+                String number = line.replace(",","").replace(" ", "").trim();
                 Log.d(TAG, "read: " + number);
-                spNumbers.addNumber(number);
+                if (!number.isEmpty()) {
+                    spNumbers.addNumber(number);
+                }
                 line = reader.readLine();
             }
-            showSnackbar("Success add data. Refresh this page");
-            toMainActivity();
+            reader.close();
+            fileReader.close();
         } catch (IOException e) {
-            Toast.makeText(getContext(), "Problem when reading file because " + e.getMessage(),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            showSnackbar("error: " + e.getMessage());
         }
-
+        showSnackbar("Success add data. Refresh this page");
     }
 
     private void toMainActivity() {
@@ -198,6 +209,12 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
             showSnackbar(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @OnClick(R.id.btn_delete_recipient)
+    void deleteRecipient() {
+        spNumbers.deleteNumber();
+        toMainActivity();
     }
 
 }

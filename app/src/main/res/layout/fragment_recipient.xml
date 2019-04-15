@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Daftar nomor hape"
+        android:text="@string/daftar_nomor_hape"
         style="@style/TextAppearance.AppCompat.Headline"
         android:textColor="@color/colorPrimary"
         android:layout_marginTop="20dp"

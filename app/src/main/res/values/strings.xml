@@ -10,4 +10,5 @@
     <string name="send_multiple_sms">Send Multiple SMS</string>
     <string name="sms_body">SMS Body</string>
     <string name="send">Send</string>
+    <string name="daftar_nomor_hape">Daftar nomor hape</string>
 </resources>

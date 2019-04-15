@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,6 +56,8 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
 
     @BindView(R.id.list_number)
     ListView listNumberView;
+    @BindView(R.id.recipient_text)
+    TextView tvRecipientTitle;
     @BindView(R.id.btn_add_recipient)
     FloatingActionButton addBtn;
     @BindView(R.id.btn_delete_recipient)
@@ -129,34 +132,10 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
                 R.layout.item_number_list, R.id.text_view_number, numberList);
         listNumberView.setAdapter(arrayAdapter);
 
-        for (String s : numberList) {
-            Log.d(TAG, s);
-        }
+        String textTitleInRecipient = getString(R.string.daftar_nomor_hape) + " (" + numberList.size() + ")";
+        tvRecipientTitle.setText(textTitleInRecipient);
     }
 
-    private void sendSms() {
-        SmsManager smsManager = SmsManager.getDefault();
-        List<String> numberList = new ArrayList<>();
-        numberList.add("085920039600");
-        numberList.add("085741161292");
-        String smsBodyText = "Assalamualaykum. Coblos Aan Yusufianto (Caleg DPRD Purwokerto, " +
-                "Partai Koncet, No Urut 12";
-        int totalNumber = numberList.size();
-
-        for (int i = 0; i < totalNumber; i++) {
-            Log.d(TAG, "step " + i + ", sending sms to " + numberList.get(i));
-            smsManager.sendTextMessage(numberList.get(i), null, smsBodyText, null, null);
-            delay();
-        }
-    }
-
-    private void delay() {
-        try {
-            Thread.sleep(spNumbers.getIntervalTime());
-        } catch (InterruptedException e) {
-            showSnackbar("error while using thread when delay waiting sms");
-        }
-    }
 
     private void showSnackbar(String message) {
         Snackbar.make(getView(), message,

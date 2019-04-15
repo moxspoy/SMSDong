@@ -62,6 +62,7 @@ public class Sender extends AsyncTask<String, Integer, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         progressDialog.show();
+        progressDialog.setCancelable(false);
         loading.setVisibility(View.GONE);
     }
 

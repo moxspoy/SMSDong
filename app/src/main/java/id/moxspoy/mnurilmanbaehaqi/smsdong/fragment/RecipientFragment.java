@@ -195,5 +195,4 @@ public class RecipientFragment extends Fragment implements FileChooser.ChooserLi
         spNumbers.deleteNumber();
         toMainActivity();
     }
-
 }

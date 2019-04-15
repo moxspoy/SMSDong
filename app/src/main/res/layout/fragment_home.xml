@@ -96,7 +96,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="2"
-                android:textColor="@color/putih"/>
+                android:textColor="@color/putih"
+                android:checked="true"/>
             <RadioButton
                 android:id="@+id/option_5_second"
                 android:layout_width="match_parent"
@@ -108,8 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="10"
-                android:textColor="@color/putih"
-                android:checked="true"/>
+                android:textColor="@color/putih" />
             <RadioButton
                 android:id="@+id/option_21_second"
                 android:layout_width="match_parent"

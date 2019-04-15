@@ -131,6 +131,7 @@ public class HomeFragment extends Fragment {
     @OnClick(R.id.sms_send)
     void sendSMS(){
         String smsBodyText = smsBody.getText().toString();
+
         int selectedId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = getView().findViewById(selectedId);
         switch (radioButton.getText().toString()) {
@@ -152,6 +153,11 @@ public class HomeFragment extends Fragment {
 
         if (smsBodyText.isEmpty()) {
             Snackbar.make(getView(), "Fill this message, cannot create sms!",
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        if (smsBodyText.length() > 160) {
+            Snackbar.make(getView(), "Sms body more than 160 character, please delete some characters",
                     Snackbar.LENGTH_SHORT).show();
             return;
         }

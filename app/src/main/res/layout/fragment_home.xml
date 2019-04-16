@@ -47,14 +47,29 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/send"
-                android:textColor="@color/putih"
-                android:textAllCaps="false"
-                android:background="@color/colorPrimary"
-                android:id="@+id/sms_send"/>
+                android:orientation="horizontal">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send"
+                    android:textColor="@color/putih"
+                    android:textAllCaps="false"
+                    android:background="@color/colorPrimary"
+                    android:id="@+id/sms_send"/>
+                <Spinner
+                    android:layout_width="150dp"
+                    android:layout_height="45dp"
+                    android:id="@+id/option_card"
+                    ></Spinner>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_number_filtered"
+                    android:text="21 numbers"/>
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

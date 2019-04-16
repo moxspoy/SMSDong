@@ -19,17 +19,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +47,7 @@ import butterknife.OnClick;
 import id.moxspoy.mnurilmanbaehaqi.smsdong.R;
 import id.moxspoy.mnurilmanbaehaqi.smsdong.utility.Numbers;
 import id.moxspoy.mnurilmanbaehaqi.smsdong.utility.Sender;
+import id.moxspoy.mnurilmanbaehaqi.smsdong.utility.SimCardNumber;
 
 public class HomeFragment extends Fragment {
 
@@ -52,8 +58,11 @@ public class HomeFragment extends Fragment {
             "\nelemen guru ayo gunakan hak pilihnya" +
             "\ningat\n\n" +
             "Dr. Didi Suprijadi MM (Ketua PB PGRI)";
+    private static final String[] cardNames = new String[]{"Telkomsel", "Xl Axis", "Indosat", "Smartfren", "Three"};
+    private static ArrayList<String> numbersAfterFiltered = new ArrayList<>();
     public long SMS_TIME_INTERVAL = 2000L;
     private String PERMISSION_TEXT = "permission is ";
+    private String provider = cardNames[2];
 
     @BindView(R.id.sms_body)
     EditText smsBody;
@@ -71,6 +80,10 @@ public class HomeFragment extends Fragment {
     RadioButton option10;
     @BindView(R.id.option_21_second)
     RadioButton option21;
+    @BindView(R.id.option_card)
+    Spinner spinner;
+    @BindView(R.id.tv_number_filtered)
+    TextView tvNumberFiltered;
 
     private SmsManager smsManager;
     private ArrayList<String> numberList;
@@ -94,11 +107,62 @@ public class HomeFragment extends Fragment {
         smsManager = SmsManager.getDefault();
         initNumbersFromSharedPref();
         initDefaultSMSBody();
+        initSpinner();
         return view;
+    }
+
+
+
+    private void initNumbersFromSharedPref() {
+        numberList = new ArrayList<>();
+        spNumbers = new Numbers(getContext());
+        numbers = spNumbers.getAllNumber();
+
+        for (String num : numbers) {
+            numberList.add(num);
+        }
+
     }
 
     private void initDefaultSMSBody() {
         smsBody.setText(defaultSmsBody);
+    }
+
+    private void initSpinner() {
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.support_simple_spinner_dropdown_item, cardNames);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                provider = cardNames[i].toLowerCase();
+                numbersAfterFiltered = new ArrayList<>();
+                for (String num : numberList) {
+                    String card = new SimCardNumber().getSimCardName(num).toLowerCase();
+                    Log.d(TAG, "card: " + card);
+                    if (provider.equalsIgnoreCase(card)) {
+                        numbersAfterFiltered.add(num);
+                    }
+                }
+                String numberFilteredTotal = numbersAfterFiltered.size() + " number";
+                tvNumberFiltered.setText(numberFilteredTotal);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //set default indosat
+                provider = cardNames[2];
+                numbersAfterFiltered = new ArrayList<>();
+                for (String num : numberList) {
+                    String card = new SimCardNumber().getSimCardName(num).toLowerCase();
+                    Log.d(TAG, "card: " + card);
+                    if (provider.equalsIgnoreCase(card)) {
+                        numbersAfterFiltered.add(num);
+                    }
+                }
+                String numberFilteredTotal = numbersAfterFiltered.size() + " number";
+                tvNumberFiltered.setText(numberFilteredTotal);
+            }
+        });
     }
 
     private void checkPermission() {
@@ -114,18 +178,6 @@ public class HomeFragment extends Fragment {
                         PackageManager.PERMISSION_GRANTED);
             }
         }
-    }
-
-    private void initNumbersFromSharedPref() {
-        numberList = new ArrayList<>();
-        spNumbers = new Numbers(getContext());
-        numbers = spNumbers.getAllNumber();
-
-        for (String num : numbers) {
-            numberList.add(num);
-        }
-
-        Log.d(TAG, "numbers size: " + numbers.size() + ", numberlsit size: " + numberList.size());
     }
 
     @OnClick(R.id.sms_send)
@@ -161,7 +213,7 @@ public class HomeFragment extends Fragment {
                     Snackbar.LENGTH_SHORT).show();
             return;
         }
-        if (numberList.isEmpty()) {
+        if (numbersAfterFiltered.isEmpty()) {
             /*//TODO comment add funtion and uncomment snackbat
             numbers.add("has");
             numbers.add("crot");
@@ -169,7 +221,7 @@ public class HomeFragment extends Fragment {
             Snackbar.make(getView(), "Phone number is empty. Please add first in setting menu",
                     Snackbar.LENGTH_SHORT).show();
         } else {
-            Sender sender = new Sender(getView(), numberList, loading);
+            Sender sender = new Sender(getView(), numbersAfterFiltered, loading);
             sender.execute(smsBodyText);
             smsBody.setText(defaultSmsBody);
         }

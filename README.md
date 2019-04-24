@@ -21,7 +21,7 @@ to send promotion/campaign message to contact that he had.
     0882626272767,
     08373636362,
     ...
-    083672683736```
+    083672683736
 2. Type your message body and press Send button. 
 3. Now wait until android finished its work.
 
